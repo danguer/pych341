@@ -75,4 +75,12 @@ class SPIHandler:
         self.device.write(cmd)
 
         # after write, needs to read the controller data
-        return self.device.read(data_len)
+        data_read = self.device.read(data_len)
+        if self.bit_mode == SPIBitMode.MSB:
+            data_read_msb = bytearray()
+            for d in data_read:
+                data_read_msb.append(self.map_byteorder[d])
+
+            data_read = bytes(data_read_msb)
+
+        return data_read
